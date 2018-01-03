@@ -18,6 +18,10 @@ brew install pkg-config
 pip install matplotlib
 pip install git+git://github.com/matplotlib/matplotlib.git
 
+pip install pandas
+
+pip install  sklearn
+
 
 
 
