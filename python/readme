@@ -9,6 +9,16 @@ rvm install "ruby-2.4.2"
 
 
 
+brew install gcc
+
+pip install numpy
+
+pip install scipy
+brew install pkg-config
+pip install matplotlib
+pip install git+git://github.com/matplotlib/matplotlib.git
+
+
 
 
 python 
