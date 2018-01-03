@@ -1,5 +1,11 @@
 brew tap homebrew/science && brew install python numpy scipy matplotlib
 
+\curl -sSL https://get.rvm.io | bash -s stable
+source /Users/xwang11/.rvm/scripts/rvm
+rvm list known       
+ruby -v 
+rvm install "ruby-2.4.2"
+
 
 
 
