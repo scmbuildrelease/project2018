@@ -1,12 +1,19 @@
-brew tap homebrew/science && brew install python numpy scipy matplotlib
 
+
+
+mac install from the web Anaconda
+and run the anaconda from mac , run the python code in the anaconda
+
+
+
+
+brew tap homebrew/science && brew install python numpy scipy matplotlib
 \curl -sSL https://get.rvm.io | bash -s stable
 source /Users/xwang11/.rvm/scripts/rvm
 rvm list known       
 ruby -v 
 rvm install "ruby-2.4.2"
 
-mac install from the web Anaconda
 
 
 brew install gcc
@@ -21,7 +28,6 @@ pip install  sklearn
 
 
 python 
-
 # Python version
 import sys
 print('Python: {}'.format(sys.version))
@@ -57,12 +63,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
-
-
-
-
-
-
 
 
 
