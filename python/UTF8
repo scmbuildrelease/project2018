@@ -1,0 +1,49 @@
+UTF stands for Unicode Transformation Format. It is a family of standards for encoding the Unicode character set into its equivalent binary value. UTF was developed so that users have a standardized means of encoding the characters with the minimal amount of space.
+
+UTF-8 and UTF 16 are only two of the established standards for encoding. They only differ in how many bytes they use to encode each character. Since both are variable width encoding, they can use up to four bytes to encode the data but when it comes to the minimum, UTF-8 only uses 1 byte (8bits) and UTF-16 uses 2 bytes(16bits).
+
+This bears a huge impact on the resulting size of the encoded files. When using ASCII only characters, a UTF-16 encoded file would be roughly twice as big as the same file encoded with UTF-8.
+
+The main advantage of UTF-8 is that it is backwards compatible with ASCII. The ASCII character set is fixed width and only uses one byte.
+
+When encoding a file that uses only ASCII characters with UTF-8, the resulting file would be identical to a file encoded with ASCII. This is not possible when using UTF-16 as each character would be two bytes long.
+
+Legacy software that is not Unicode aware would be unable to open the UTF-16 file even if it only had ASCII characters.
+
+UTF-8 is byte oriented format and therefore has no problems with byte oriented networks or file. UTF-16, on the other hand, is not byte oriented and needs to establish a byte order in order to work with byte oriented networks. UTF-8 is also better in recovering from errors that corrupt portions of the file or stream as it can still decode the next uncorrupted byte.
+
+UTF-16 does the exact same thing if some bytes are corrupted but the problem lies when some bytes are lost. The lost byte can mix up the following byte combinations and the end result would be garbled
+
+1. UTF-8 and UTF-16 are both used for encoding characters
+
+2.	UTF-8 uses a byte at the minimum in encoding the characters while UTF-16 uses two
+
+3.	A UTF-8 encoded file tends to be smaller than a UTF-16 encoded file
+
+4.	UTF-8 is compatible with ASCII while UTF-16 is incompatible with ASCII
+
+5.	UTF-8 is byte oriented while UTF-16 is not
+
+6.	UTF-8 is better in recovering from errors compared to UTF-16
+
+Both can encode the same information: the full zillion-and-a-half characters defined by the Unicode standard.
+
+They just use different numbers of bits/bytes to do so, and because of that difference, they end up representing characters with different, although similar and easily translatable, character codes.
+
+UTF-8 uses a minimum of 1 8-bit byte to encode characters. For the 128 7-bit characters of the ASCII character set, it is backward-compatible with ASCII: a roman-alphabet ASCII text encoded in UTF-8 will display normally on a system that does not understand UTF-8. Accented characters are not part of ASCII and so they will all be more or less garbled. Beyond 1 byte, UTF-8 may use 2, 3 or 4 bytes to encode the rest of the Unicode character set. Because of the way it uses the first byte of multi-byte sequences, UTF-8 uses 3 bytes for some characters that require only 2 bytes in UTF-16.
+
+UTF-16 uses a minimum of 2 bytes/16 bits. This makes it incompatible with ASCII. Given an /A-Za-z/ text in UTF-16, a system that does not understand UTF-16 will make a mess of it (showing a null character before every single character).
+
+A few examples:
+
+"A" in ASCII is hex 0x41; in UTF-8 it is also 0x41; in UTF-16 it is 0x0041
+
+"À" in Latin-1 is 0xC0; in UTF-8 it is 0xC3 0x80; in UTF-16 it is 0x00C0
+
+The Tibetan letter ? in UTF-8 is 0xE0 0xBD 0xA8; it UTF-16 it is 0x0F68
+
+This character*: Directory: /info/... in UTF-8 is 0xF0 0xA0 0x80 0x8B; in UTF-16 it is 0xD840 0xDC0B
+
+In the first three examples, the UTF-16 character has the same hex number as the Unicode codepoint; for the two-unit character in the last example, the codepoint is U+2000B.
+
+Wikipedia has a detailed comparison of technical advantages/disadvantages of UTF-8 and UTF-16:
