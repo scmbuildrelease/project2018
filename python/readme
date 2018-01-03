@@ -1,3 +1,10 @@
+brew tap homebrew/science && brew install python numpy scipy matplotlib
+
+
+
+
+
+
 https://machinelearningmastery.com/machine-learning-in-python-step-by-step/
 
 Detail info here
