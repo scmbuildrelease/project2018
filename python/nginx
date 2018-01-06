@@ -1,0 +1,11 @@
+Nginx (pronounced "Engine X") is a high performance web server. It was originally developed to tackle the 10K problem which means serving 10.000 concurrent connections. Nginx can be used as a standalone web server, or serve in front of other web servers as a reverse proxy.
+
+When serving as a reverse proxy, Nginx is acting as a front web server which passes the incoming requests on to web servers on the back, on different ports etc. Nginx can then handle aspects like SSL / HTTPS, GZip, cache headers, load balancing and a lot of other stuff. The web servers on the back then do not need to know how to handle this. And - you only have one web server for which you need to learn how to configure SSL / HTTPS, GZip etc. - and that is Nginx. I use Nginx in front of Jetty. Nginx handles all the SSL / HTTPS stuff, and Jetty just serves ordinary HTTP requests on the back.
+
+You can find Nginx at the Nginx website: http://nginx.com
+
+
+
+
+NGINX is well known as a high‑performance load balancer, cache, and web server, powering over 40% of the busiest websites in the world. 
+
