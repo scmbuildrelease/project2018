@@ -242,9 +242,9 @@ umask 本质：屏蔽掉最大权限相应的位，从而得出默认的权限
 如果需要设置全局的umask值，可以进入/etc/profile或者/ete/brshrc里面设置，但是并不建议这样做
 
 wKioL1ejGjminK5vAAA3NRms65c408.png
-
-从这个图我们也可以了解到，为什么root账号的umask值是022，而普通账号的umask是022
-
+ 
+从这个图我们也可以了解到，为什么root账号的umask值是022，而普通账号的umask是002
+0022 0002
 
 设置umask值表示的方式可以有以下两种
 
