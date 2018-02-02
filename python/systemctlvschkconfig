@@ -1,0 +1,408 @@
+inux启动级别 以及 chkconfig详解
+ 
+
+一、启动级别
+
+ 
+
+1、查看linux 系统默认启动级别
+
+cat /etc/inittab 
+
+id:3:initdefault: ##可以看出默认为三
+
+ 
+
+2、查看某一服务在各个启动级别上是否启动
+
+[root@localhost ~]# chkconfig --list  nfs
+
+nfs             0:off   1:off   2:off   3:off   4:off   5:off   6:off
+
+ 
+
+3、在Linux中有7种启动级别
+
+分别为： 
+
+#   0 - halt (Do NOT set initdefault to this) 
+
+#   1 - Single user mode 
+
+#   2 - Multiuser, without NFS (The same as 3, if you do not have networking) 
+
+#   3 - Full multiuser mode 
+
+#   4 - unused 
+
+#   5 - X11 
+
+#   6 - reboot (Do NOT set initdefault to this) 
+
+各个运行级的详细解释： 
+
+0 为停机，机器关闭。 
+
+1 为单用户模式，就像Win9x下的安全模式类似。 
+
+2 为多用户模式，但是没有NFS支持。 
+
+3 为完整的多用户模式，是标准的运行级。 
+
+4 一般不用，在一些特殊情况下可以用它来做一些事情。例如在笔记本电脑的电池用尽时，可以切换到这个模式来做一些设置。 
+
+5 就是X11，进到X Window系统了。 
+
+6 为重启，运行init 6机器就会重启。 
+
+ 
+
+0和6一般不用； 
+
+ 
+
+ 
+
+二、 chkconfig
+
+ 
+
+说明 ：linux 的所有服务都在 /etc/init.d/  下， 但是 /etc/init.d  是 链接的 /etc/rc.d/init.d
+
+       同样 /etc/rc[0-6].d 都是连接的相应的 /etc/rc.d/rc[0-6].d ，不同启动级别的 rc[0-6].d 中的服务都是 链接的 /etc/init.d 下的相应服务
+
+ 
+
+ 
+
+1、chkconfig命令主要用来更新（启动或停止）和查询系统服务的运行级信息。谨记chkconfig不是立即自动禁止或激活一个服务，它只是简单的改变了符号连接。
+
+  语法：
+
+    chkconfig --list [name]
+
+    chkconfig --add name
+
+    chkconfig --del name
+
+    chkconfig [--level levels] name <on|off|reset>
+
+    chkconfig [--level levels] name
+
+ 
+
+    chkconfig 没有参数运行时，显示用法。如果加上服务名，那么就检查这个服务是否在当前运行级启动。如果是，返回true，否则返回false。如果在服务名后面指定了on，off或者reset，那么chkconfi 会改变指定服务的启动信息。on和off分别指服务被启动和停止，reset指重置服务的启动信息，无论有问题的初始化脚本指定了什么。on和off开关，系统默认只对运行级2，3，4，5有效，但是reset可以对所有运行级有效。
+
+    --level选项可以指定要查看的运行级而不一定是当前运行级。
+
+    需要说明的是，对于每个运行级，只能有一个启动脚本或者停止脚本。当切换运行级时，init不会重新启动已经启动的服务，也不会再次去停止已经停止的服务。
+
+ 
+
+2、 chkconfig --list ：显示所有运行级系统服务的运行状态信息（on或off）。如果指定了name，那么只显示指定的服务在不同运行级的状态。
+
+ 
+
+    chkconfig --add name：增加一项新的服务。chkconfig确保每个运行级有一项启动(S)或者杀死(K)入口。如有缺少，则会从缺省的init脚本自动建立。
+
+ 
+
+    chkconfig --del name：删除服务，并把相关符号连接从/etc/rc[0-6].d删除。
+
+ 
+
+    chkconfig [--level levels] name <on|off|reset>：设置某一服务在指定的运行级是被启动，停止还是重置。例如，要在3，4，5运行级停止nfs服务，则命令如下：
+
+    chkconfig --level 345 nfs off
+
+ 
+
+3、举例sendmail：
+
+ 
+
+1）cat /etc/inittab
+
+id:3:initdefault: 
+
+ 
+
+2）chkconfig --list  sendmail
+
+sendmail        0:off   1:off   2:on    3:on    4:on    5:on    6:off
+
+查看连接 ：
+
+ll /etc/rc0.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov  5 23:43 K30sendmail -> ../init.d/sendmail
+
+ll /etc/rc1.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov  5 23:43 K30sendmail -> ../init.d/sendmail
+
+ll  /etc/rc2.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov  5 23:43 S80sendmail -> ../init.d/sendmail
+
+ll /etc/rc3.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov  5 23:43 S80sendmail -> ../init.d/sendmail 
+
+ll /etc/rc4.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov  5 23:43 S80sendmail -> ../init.d/sendmail
+
+ll /etc/rc5.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov  5 23:43 S80sendmail -> ../init.d/sendmail
+
+ ll /etc/rc6.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov  5 23:43 K30sendmail -> ../init.d/sendmail
+
+ 
+
+3）chkconfig --del  sendmail
+
+   [root@localhost init.d]# chkconfig --list  sendmail
+
+service sendmail supports chkconfig, but is not referenced in any runlevel (run 'chkconfig --add sendmail')
+
+查看连接
+
+[root@localhost init.d]# ll /etc/rc0.d/ |grep sendmail
+
+[root@localhost init.d]# ll /etc/rc0.d/ |grep sendmail
+
+[root@localhost init.d]# ll /etc/rc1.d/ |grep sendmail
+
+[root@localhost init.d]# ll /etc/rc2.d/ |grep sendmail
+
+[root@localhost init.d]# ll /etc/rc3.d/ |grep sendmail
+
+[root@localhost init.d]# ll /etc/rc4.d/ |grep sendmail
+
+[root@localhost init.d]# ll /etc/rc5.d/ |grep sendmail
+
+[root@localhost init.d]# ll /etc/rc6.d/ |grep sendmail
+
+[root@localhost init.d]#  ---》 全为空
+
+ 
+
+4）
+
+[root@localhost init.d]# chkconfig --add  sendmail
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:off   1:off   2:on    3:on    4:on    5:on    6:off
+
+ 
+
+查看连接：
+
+[root@localhost init.d]# ll /etc/rc0.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc1.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc2.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 S80sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc3.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 S80sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc4.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 S80sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc5.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 S80sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc6.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 K30sendmail -> ../init.d/sendmail  ----》 相应的服务连接又回来了 
+
+ 
+
+5）chkconfig   sendmail  off  --》on和off分别指服务被启动和停止，reset指重置服务的启动信息，无论有问题的初始化脚本指定了什么。on和off开关，系统                                  默认只对运行级3，4，5有效，但是reset可以对所有运行级有效
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:off   1:off   2:off   3:off   4:off   5:off   6:off
+
+ 
+
+查看连接：
+
+[root@localhost init.d]# ll /etc/rc0.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc1.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc2.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:36 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc3.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:36 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc4.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:36 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc5.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:36 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc6.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 K30sendmail -> ../init.d/sendmail  ---》全是 "K"
+
+ 
+
+6)chkconfig   sendmail  on 
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:off   1:off   2:on    3:on    4:on    5:on    6:off
+
+ 
+
+查看连接：
+
+[root@localhost init.d]# ll /etc/rc0.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc1.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 K30sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc2.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:40 S80sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc3.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:40 S80sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc4.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:40 S80sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc5.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:40 S80sendmail -> ../init.d/sendmail
+
+[root@localhost init.d]# ll /etc/rc6.d/ |grep sendmail
+
+lrwxrwxrwx 1 root root 18 Nov 10 23:33 K30sendmail -> ../init.d/sendmail  --》2，3，4，5 为“S” 其他为 K
+
+ 
+
+7）
+
+chkconfig   sendmail  off 
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:off   1:off   2:off   3:off   4:off   5:off   6:off
+
+[root@localhost init.d]# chkconfig --level 3  sendmail  on
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:off   1:off   2:off   3:on    4:off   5:off   6:off
+
+[root@localhost init.d]# chkconfig --level 0  sendmail  on
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:on    1:off   2:off   3:on    4:off   5:off   6:off  --》 看来 得用level on 参数控制 0级别
+
+ 
+
+[root@localhost init.d]# chkconfig   sendmail  off 
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:on    1:off   2:off   3:off   4:off   5:off   6:off  --》 但是这样3 级别关了 0 级别没关掉
+
+ 
+
+[root@localhost init.d]# chkconfig --level 0  sendmail  off
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:off   1:off   2:off   3:off   4:off   5:off   6:off  --》 0 级别关掉了 （经验证1，6级别 也是这样的和0级别一样 得用level控制） 
+
+ 
+
+8）
+
+[root@localhost init.d]# chkconfig   sendmail  off 
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:off   1:off   2:off   3:off   4:off   5:off   6:off
+
+[root@localhost init.d]# chkconfig   sendmail  reset
+
+[root@localhost init.d]# chkconfig --list  sendmail
+
+sendmail        0:off   1:off   2:on    3:on    4:on    5:on    6:off --》 reset指重置服务的启动信息 可以对所有运行级有效 （没太懂这个东西reset）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# chkconfig --list
+
+Note: This output shows SysV services only and does not include native
+      systemd services. SysV configuration data might be overridden by native
+      systemd configuration.
+
+      If you want to list systemd services use ‘systemctl list-unit-files‘.
+      To see services enabled on particular target use
+      ‘systemctl list-dependencies [target]‘.
+
+aegis           0:off   1:off   2:on    3:on    4:on    5:on    6:off
+agentwatch      0:off   1:off   2:on    3:on    4:on    5:on    6:off
+iprdump         0:off   1:off   2:on    3:on    4:on    5:on    6:off
+iprinit         0:off   1:off   2:on    3:on    4:on    5:on    6:off
+iprupdate       0:off   1:off   2:on    3:on    4:on    5:on    6:off
+jexec           0:off   1:on    2:on    3:on    4:on    5:on    6:off
+mysql.server    0:off   1:off   2:on    3:on    4:on    5:on    6:off
+netconsole      0:off   1:off   2:off   3:off   4:off   5:off   6:off
+network         0:off   1:off   2:on    3:on    4:on    5:on    6:off
